@@ -68,7 +68,7 @@
   .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:48px}
   .stat{position:relative;background:linear-gradient(180deg,rgba(22,27,39,.9),rgba(14,17,24,.9));border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;overflow:hidden}
   .stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--blue2),var(--gold))}
-  .stat b{display:block;font-family:"Space Grotesk";font-size:clamp(24px,3.6vw,38px);line-height:1.1}
+  .stat > b{display:block;font-family:"Space Grotesk";font-size:clamp(24px,3.6vw,38px);line-height:1.1;white-space:nowrap;font-variant-numeric:tabular-nums}
   .stat small{color:var(--muted);font-size:13px}
 
   /* ---------- checker divider + marquee ---------- */
@@ -106,7 +106,7 @@
   .stat-btn{cursor:pointer;font:inherit;color:inherit;text-align:left;width:100%;transition:transform .25s var(--ease),border-color .25s,box-shadow .25s}
   .stat-btn:hover{transform:translateY(-3px);border-color:rgba(242,181,49,.5)}
   .stat-btn[aria-pressed="true"]{border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,181,49,.22)}
-  .stat-btn small b{color:var(--gold2)}
+  .stat-btn small b{color:var(--gold2);font-weight:600;white-space:nowrap}
 
   /* ---------- cards ---------- */
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
@@ -207,7 +207,7 @@
   .panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line)}
   .panel-head h3{font-size:20px}
   .tabs{display:flex;gap:6px;padding:12px 20px;border-bottom:1px solid var(--line)}
-  .tab{background:transparent;border:1px solid transparent;color:var(--muted);border-radius:10px;padding:8px 12px;font-weight:600;font-size:14px;cursor:pointer}
+  .tab{background:transparent;border:1px solid transparent;color:var(--muted);border-radius:10px;padding:8px 12px;font-weight:600;font-size:14px;cursor:pointer;white-space:nowrap}
   .tab[aria-selected="true"]{background:var(--surface2);border-color:var(--line2);color:var(--gold2)}
   .panel-search{padding:12px 20px 0}
   .panel-search[hidden]{display:none}
@@ -243,10 +243,14 @@
     .hero h1{font-size:34px;margin-top:14px}
     .hero p.lead{font-size:15px;margin-top:12px}
     .cta-row{margin-top:18px;gap:8px}
-    .cta-row .btn{flex:1;padding:12px 14px;font-size:14px}
-    .stats{grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:22px}
-    .stat{padding:14px 12px}
-    .stat small{font-size:11.5px}
+    .cta-row{display:grid;grid-template-columns:1fr}
+    .cta-row .btn{padding:13px 14px;font-size:15px}
+    .stats{grid-template-columns:1fr 1fr;gap:8px;margin-top:22px}
+    .stat{padding:14px 14px 14px 16px}
+    .stat > b{font-size:24px}
+    .stat small{font-size:12px;line-height:1.35;display:block;margin-top:2px}
+    .stat-btn{grid-column:1/-1;display:flex;align-items:center;gap:12px}
+    .stat-btn small{margin-top:0}
     .grid{grid-template-columns:1fr 1fr;gap:10px}
     .card h3{font-size:14.5px;min-height:38px}
     .price{font-size:18px}
@@ -263,9 +267,21 @@
     .toolbar:not(.open) .row1 select,.toolbar:not(.open) .row2{display:none}
     .field,input,select,textarea,.inv select{font-size:16px}
     .meta span:nth-child(n+3){display:none}
+    .meta{font-size:12px;gap:2px 8px}
+    .meta span+span::before{display:none}
+    .modal-actions{grid-template-columns:1fr}
+    .modal-actions .btn{white-space:normal;text-align:center}
+    .sheet .info{padding:20px 16px}
+    .tabs{padding:10px 12px;gap:4px}
+    .tab{flex:1;padding:8px 6px;font-size:13.5px}
+    .panel-head,.panel-search{padding-inline:12px}
+    .panel-body{padding:14px 12px 28px}
     .owner-fab{padding:10px 16px;font-size:14px}
     .fab-long{display:none}
-    .bar{grid-template-columns:70px 1fr 84px;font-size:12px}
+    .bar{grid-template-columns:1fr auto;grid-template-areas:"l o" "t t";row-gap:6px;font-size:13px}
+    .bar span{grid-area:l}
+    .bar output{grid-area:o}
+    .bar .track{grid-area:t}
     section.estoque{scroll-margin-top:124px}
     .specs-grid{grid-template-columns:1fr 1fr}
     .sim .r,form.grid2{grid-template-columns:1fr}
@@ -273,6 +289,10 @@
     .wordmark{font-size:14px}
     .final .box{padding:32px 20px}
     .range{min-width:0}
+  }
+  @media (max-width:340px){
+    .grid{grid-template-columns:1fr}
+    .top .btn.sm{padding:9px 11px}
   }
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
@@ -324,7 +344,7 @@
     <div class="sec-head">
       <div>
         <div class="kicker">Estoque</div>
-        <h2>Encontre o seu</h2>
+        <h2>Encontre o seu próximo carro</h2>
         <p id="resumo">Carregando o estoque…</p>
       </div>
     </div>
@@ -421,7 +441,7 @@
       <button class="tab" role="tab" data-tab="loja" aria-selected="false">Dados da loja</button>
     </div>
     <div class="panel-search" id="pSearchWrap">
-      <input class="field" id="pSearch" type="search" placeholder="Buscar por modelo, marca, cor, placa ou ano" aria-label="Buscar carro no estoque">
+      <input class="field" id="pSearch" type="search" placeholder="Modelo, cor, placa ou ano" aria-label="Buscar carro no estoque">
     </div>
     <div class="panel-body" id="pBody"></div>
   </aside>
