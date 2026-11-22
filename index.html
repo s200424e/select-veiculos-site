@@ -30,7 +30,7 @@
   header.top{position:fixed;top:0;left:0;right:0;z-index:30;background:rgba(6,7,11,.8);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
   header.top::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:3px;background:linear-gradient(90deg,var(--blue),var(--gold) 50%,var(--blue));opacity:.9}
   .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:68px}
-  .brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+  .brand{display:flex;align-items:center;gap:12px;text-decoration:none;padding-block:8px}
   .stars{display:flex;gap:2px;color:var(--gold);font-size:9px;letter-spacing:2px}
   .wordmark{font-family:Michroma,"Space Grotesk",sans-serif;font-size:17px;line-height:1;letter-spacing:.06em}
   .wordmark b{font-weight:400;background:linear-gradient(90deg,var(--blue2),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -88,7 +88,7 @@
   .kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600}
 
   section.estoque{scroll-margin-top:140px}
-  .toolbar{position:sticky;top:calc(68px + env(safe-area-inset-top,0px));z-index:20;background:rgba(6,7,11,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:var(--r);padding:10px;display:grid;gap:8px;margin-bottom:18px;box-shadow:0 14px 30px -18px rgba(0,0,0,.9)}
+  .toolbar{position:sticky;top:calc(71px + env(safe-area-inset-top,0px));z-index:20;background:rgba(6,7,11,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:var(--r);padding:10px;display:grid;gap:8px;margin-bottom:18px;box-shadow:0 14px 30px -18px rgba(0,0,0,.9)}
   .toolbar .head{display:none}
   .toolbar .row1{display:grid;grid-template-columns:2fr 1.1fr 1.1fr;gap:10px}
   .field{background:var(--surface2);border:1px solid var(--line);border-radius:var(--r-sm);padding:11px 14px;width:100%;outline:none;transition:border-color .2s,box-shadow .2s}
@@ -239,8 +239,12 @@
     .toolbar .row1 .field:first-child{grid-column:1/-1}
   }
   @media (max-width:560px){
-    .hero{padding-top:44px}
-    .stats{grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:34px}
+    .hero{padding:28px 0 30px}
+    .hero h1{font-size:34px;margin-top:14px}
+    .hero p.lead{font-size:15px;margin-top:12px}
+    .cta-row{margin-top:18px;gap:8px}
+    .cta-row .btn{flex:1;padding:12px 14px;font-size:14px}
+    .stats{grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:22px}
     .stat{padding:14px 12px}
     .stat small{font-size:11.5px}
     .grid{grid-template-columns:1fr 1fr;gap:10px}
@@ -250,10 +254,18 @@
     .actions{grid-template-columns:1fr}
     .actions .wa{display:none}
     .toolbar .row1{grid-template-columns:1fr}
-    .toolbar{top:calc(64px + env(safe-area-inset-top,0px));padding:8px}
-    .toolbar .head{display:flex;justify-content:space-between;align-items:center;gap:10px}
-    .toolbar .head small{color:var(--muted);font-size:12px}
+    .toolbar{padding:8px;grid-template-columns:1fr auto;align-items:start}
+    .toolbar .head{display:contents}
+    .toolbar .head small{display:none}
+    #toggleFiltros{grid-column:2;grid-row:1;height:46px}
+    .toolbar .row1{grid-column:1;grid-row:1}
+    .toolbar .row2{grid-column:1/-1}
     .toolbar:not(.open) .row1 select,.toolbar:not(.open) .row2{display:none}
+    .field,input,select,textarea,.inv select{font-size:16px}
+    .meta span:nth-child(n+3){display:none}
+    .owner-fab{padding:10px 16px;font-size:14px}
+    .fab-long{display:none}
+    .bar{grid-template-columns:70px 1fr 84px;font-size:12px}
     section.estoque{scroll-margin-top:124px}
     .specs-grid{grid-template-columns:1fr 1fr}
     .sim .r,form.grid2{grid-template-columns:1fr}
@@ -319,7 +331,7 @@
 
     <div class="toolbar" id="toolbar">
       <div class="head">
-        <button class="btn ghost sm" id="toggleFiltros" type="button" aria-expanded="false" aria-controls="toolbar">Filtros e ordenação</button>
+        <button class="btn ghost sm" id="toggleFiltros" type="button" aria-expanded="false" aria-controls="toolbar">Filtros</button>
         <small id="resumoMini"></small>
       </div>
       <div class="row1">
@@ -395,7 +407,7 @@
 </div>
 
 <!-- Painel do dono -->
-<button class="btn owner-fab" id="ownerFab" aria-haspopup="dialog">Painel do lojista</button>
+<button class="btn owner-fab" id="ownerFab" aria-haspopup="dialog">Painel<span class="fab-long"> do lojista</span></button>
 <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="pTitle">
   <div class="scrim" data-close-drawer></div>
   <aside class="panel">
@@ -671,7 +683,7 @@
     $("toggleFiltros").addEventListener("click", () => {
       const t = $("toolbar"), open = t.classList.toggle("open");
       $("toggleFiltros").setAttribute("aria-expanded", String(open));
-      $("toggleFiltros").textContent = open ? "Fechar filtros" : "Filtros e ordenação";
+      $("toggleFiltros").textContent = open ? "Fechar" : "Filtros";
     });
     $("grid").addEventListener("click", e => {
       const card = e.target.closest(".card"); if (!card) return;
